@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
 	if(argc != 2 || strcmp(argv[1], "--help") == 0){
 		printf("%s file\n", argv[0]);
 		exit(EXIT_FAILURE);
-	}
+	} // usage of the command so far
 
 	fd = open(argv[1], O_RDONLY);
 	if(fd == -1){
