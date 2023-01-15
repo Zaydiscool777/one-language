@@ -8,11 +8,13 @@
 #include <fcntl.h>
 
 #define BUFFER_SIZE 1024
+#define MAX_LINE_LENGTH 1024
 
 int main(int argc, char *argv[]){
 	int fd;
-	char buffer[BUFFER_SIZE];
+	char buffer[BUFFER_SIZE], line[MAX_LINE_LENGTH];
 	ssize_t numRead;
+	int lineLength;
 
 	if(argc != 2 || strcmp(argv[1], "--help") == 0){
 		printf("%s file\n", argv[0]);
@@ -26,9 +28,16 @@ int main(int argc, char *argv[]){
 	}
 
 	while((numRead = read(fd, buffer, BUFFER_SIZE)) > 0){
-		if(write(STDOUT_FILENO, buffer, numRead) != numRead){
-			printf("couldn't write whole buffer\n");
-			exit(EXIT_FAILURE);
+		for(int i = 0; i < numRead; i++){
+			if(buffer[i] == '\n'){
+				line[lineLength] = '\0';
+				printf("%d\n", lineLength);
+				lineLength = 0;
+			}
+			else{
+				line[lineLength] = buffer[i];
+				lineLength++;
+			}
 		}
 	}
 
@@ -41,6 +50,6 @@ int main(int argc, char *argv[]){
 		printf("close file error: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-
+	
 	exit(EXIT_SUCCESS);
 }
